@@ -1,0 +1,10 @@
+{
+  "name": "telehealth",
+  "version": "0.0.1",
+  "description": "Telehealth Mono-Repository",
+  "main": "index.js",
+  "repository": "https://github.com/remedy-engineering/remedy-telehealth-service.git",
+  "author": "Remedy",
+  "private": true,
+  "workspaces": ["website"]
+}

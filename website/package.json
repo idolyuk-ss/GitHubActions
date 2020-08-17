@@ -1,0 +1,42 @@
+{
+  "name": "website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "jest",
+    "tdd": "jest --watchAll --notify",
+    "typeorm:local": "yarn local ./node_modules/.bin/typeorm",
+    "db:init": "docker-compose up -d",
+    "db:teardown": "docker-compose down",
+    "db:migrate": "yarn typeorm:local migration:run",
+    "db:sync": "yarn typeorm:local schema:sync",
+    "g:entity": "yarn typeorm:local entity:create -n",
+    "g:migration": "yarn typeorm:local migration:generate -n",
+    "local": "DOTENV_CONFIG_PATH=./.env ts-node -P ./tsconfig.yarn.json -r dotenv/config"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "next": "9.5.2",
+    "pg": "^8.3.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.25"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@testing-library/react": "^10.4.8",
+    "@types/jest": "^26.0.9",
+    "@types/react": "^16.9.46",
+    "babel-jest": "^26.3.0",
+    "jest": "^26.3.0",
+    "react-test-renderer": "^16.13.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  }
+}
