@@ -57,7 +57,7 @@ jobs:
         TYPEORM_ENTITIES_DIR: "entities"
         TYPEORM_MIGRATIONS_DIR: "migrations"
         TYPEORM_SYNCHRONIZE: true
-        PGHOST: "localhost"
+        PGHOST: "postgres"
         PGDATABASE: "telehealth_testing"
         PGUSER: "postgres"
         PGPASSWORD: "postgres"
