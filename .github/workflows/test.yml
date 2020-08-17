@@ -3,60 +3,62 @@ name: 'GitHubActions'
 on: [push]
 
 jobs:
-  yarn_build:
+  yarn_build: 
+    name: 'YarnBuild'
+    runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:10.18-jessie
+    env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    defaults:
+      run:
+        working-directory: ./website
+        
+#     container: node:10.18-jessie
 
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres
+        image: postgres:12.4
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres  
+          POSTGRES_DB: postgres  
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
-           
+          --health-retries 5           
+
     steps:
-      name: 'YarnBuild'
-      runs-on: ubuntu-latest
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      defaults:
-        run:
-          working-directory: ./website
-      steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
 
-      - name: Yarn install
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install 
+    - name: Yarn install
+      uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: install 
 
-      - name: Yarn build
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build
+    - name: Yarn build
+      uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: build
 
-      - name: Yarn build
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: ci
+    - name: Yarn build
+      uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: ci
 
-      - name: Yarn Test
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: test
+    - name: Yarn Test
+      uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: test
