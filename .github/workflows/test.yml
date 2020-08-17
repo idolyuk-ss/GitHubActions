@@ -45,6 +45,23 @@ jobs:
     - name: NPM runs
       run: npm ci
     - run: npm run db:migrate
+      env: 
+        TYPEORM_CONNECTION:"postgres"
+        TYPEORM_HOST:"localhost"
+        TYPEORM_USERNAME:"postgres"
+        TYPEORM_PASSWORD:"postgres"
+        TYPEORM_DATABASE:"telehealth_testing"
+        TYPEORM_PORT:5432
+        TYPEORM_ENTITIES:"entities/*{.ts, .js}"
+        TYPEORM_MIGRATIONS:"migrations/*.ts"
+        TYPEORM_ENTITIES_DIR:"entities"
+        TYPEORM_MIGRATIONS_DIR:"migrations"
+        TYPEORM_SYNCHRONIZE:true
+        PGHOST:"localhost"
+        PGDATABASE:"telehealth_testing"
+        PGUSER:"postgres"
+        PGPASSWORD:"postgres"
+        PGPORT:"5432"
     - run: npm build
     - run: npm test   
 #     - name: Yarn install
