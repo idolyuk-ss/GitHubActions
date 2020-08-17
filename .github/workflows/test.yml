@@ -46,8 +46,9 @@ jobs:
       with:
         node-version: '12'
     - name: NPM runs
-      run: npm ci
-    - run: npm run db:migrate
+      run: yarn
+    - run: yarn build
+    - run: yarn db:migrate
       env: 
         TYPEORM_CONNECTION: "postgres"
         TYPEORM_HOST: "localhost"
@@ -65,24 +66,5 @@ jobs:
         PGUSER: "postgres"
         PGPASSWORD: "postgres"
         PGPORT: "5432"
-    - run: npm build
-    - run: npm test   
-#     - name: Yarn install
-#       uses: borales/actions-yarn@v2.0.0
-#       with:
-#         cmd: install 
+    - run: yarn test   
 
-#     - name: Yarn build
-#       uses: borales/actions-yarn@v2.0.0
-#       with:
-#         cmd: build
-
-#     - name: Yarn build
-#       uses: borales/actions-yarn@v2.0.0
-#       with:
-#         cmd: ci
-
-#     - name: Yarn Test
-#       uses: borales/actions-yarn@v2.0.0
-#       with:
-#         cmd: test
