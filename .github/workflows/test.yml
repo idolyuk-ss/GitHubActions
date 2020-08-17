@@ -46,7 +46,7 @@ jobs:
       with:
         node-version: '12'
     - name: NPM runs
-      run: yarn
+      run: yarn --frozen-lockfile
     - run: yarn build
     - run: yarn db:migrate
       env: 
