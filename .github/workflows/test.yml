@@ -26,7 +26,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres  
-          POSTGRES_DB: postgres  
+          POSTGRES_DB: telehealth_testing  
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -42,23 +42,27 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12'
+    - name: NPM runs
+      run: npm ci
+    - run: npm db:migrate
+    - run: npm build
+    - run: npm test   
+#     - name: Yarn install
+#       uses: borales/actions-yarn@v2.0.0
+#       with:
+#         cmd: install 
 
-    - name: Yarn install
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: install 
+#     - name: Yarn build
+#       uses: borales/actions-yarn@v2.0.0
+#       with:
+#         cmd: build
 
-    - name: Yarn build
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build
+#     - name: Yarn build
+#       uses: borales/actions-yarn@v2.0.0
+#       with:
+#         cmd: ci
 
-    - name: Yarn build
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: ci
-
-    - name: Yarn Test
-      uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: test
+#     - name: Yarn Test
+#       uses: borales/actions-yarn@v2.0.0
+#       with:
+#         cmd: test
