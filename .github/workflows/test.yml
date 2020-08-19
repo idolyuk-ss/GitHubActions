@@ -1,20 +1,37 @@
-name: 'GitHubActions'
+name: PullRequest Master
 
-on: [push]
+on:
+  pull_request:
+    branches: [ master ]
 
 jobs:
-  yarn_build: 
-    name: 'YarnBuild'
+  build_pr: 
+    name: 'Build Pull Request'
     runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
     env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TYPEORM_CONNECTION: "postgres"
+        TYPEORM_HOST: "localhost"
+        TYPEORM_USERNAME: "postgres"
+        TYPEORM_PASSWORD: ${{ secrets.PGPASSWORD }}
+        TYPEORM_DATABASE: "telehealth_testing"
+        TYPEORM_PORT: 5432
+        TYPEORM_ENTITIES: "entities/*{.ts, .js}"
+        TYPEORM_MIGRATIONS: "migrations/*.ts"
+        TYPEORM_ENTITIES_DIR: "entities"
+        TYPEORM_MIGRATIONS_DIR: "migrations"
+        TYPEORM_SYNCHRONIZE: true
+        PGHOST: "postgres"
+        PGDATABASE: "telehealth_testing"
+        PGUSER: "postgres"
+        PGPASSWORD:  ${{ secrets.PGPASSWORD }}
+        PGPORT: 5432
     defaults:
       run:
         working-directory: ./website
-        
-#     container: node:10.18-jessie
+    
+    strategy:
+      matrix:
+        node-version: [12.15.0]
 
     # Service containers to run with `container-job`
     services:
@@ -24,9 +41,9 @@ jobs:
         image: postgres:12.4
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres  
-          POSTGRES_DB: telehealth_testing  
+          POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD }}
+          POSTGRES_USER: ${{ env.PGUSER }}  
+          POSTGRES_DB: ${{ env.PGDATABASE }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -38,33 +55,20 @@ jobs:
           - 5432:5432         
 
     steps:
-    - name: Checkout
+    - name: Checkout and Setup node
       uses: actions/checkout@v2
-
-    - name: Setup Node
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
-        node-version: '12'
-    - name: NPM runs
-      run: yarn --frozen-lockfile
+        node-version: ${{ matrix.node-version }}
+        
+    - name: yarn install dependencies
+      run: npm install yarn -g
+    - run: echo $TYPEORM_CONNECTION 
+    - run: yarn --frozen-lockfile
     - run: yarn build
     - run: yarn db:migrate
-      env: 
-        TYPEORM_CONNECTION: "postgres"
-        TYPEORM_HOST: "localhost"
-        TYPEORM_USERNAME: "postgres"
-        TYPEORM_PASSWORD: "postgres"
-        TYPEORM_DATABASE: "telehealth_testing"
-        TYPEORM_PORT: 5432
-        TYPEORM_ENTITIES: "entities/*{.ts, .js}"
-        TYPEORM_MIGRATIONS: "migrations/*.ts"
-        TYPEORM_ENTITIES_DIR: "entities"
-        TYPEORM_MIGRATIONS_DIR: "migrations"
-        TYPEORM_SYNCHRONIZE: true
-        PGHOST: "postgres"
-        PGDATABASE: "telehealth_testing"
-        PGUSER: "postgres"
-        PGPASSWORD: "postgres"
-        PGPORT: "5432"
-    - run: yarn test   
-
+    - run: echo "AWS Deployment"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - run: npm test   
