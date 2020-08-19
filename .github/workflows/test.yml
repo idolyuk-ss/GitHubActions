@@ -24,7 +24,7 @@ jobs:
         PGDATABASE: "telehealth_testing"
         PGUSER: "postgres"
         PGPASSWORD:  ${{ secrets.PGPASSWORD }}
-        PGPORT: "5432"
+        PGPORT: 5432
     defaults:
       run:
         working-directory: ./website
