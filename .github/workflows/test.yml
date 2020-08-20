@@ -45,6 +45,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12'
+    - run: yarn -v
     - name: NPM runs
       run: yarn --frozen-lockfile
     - run: yarn build
