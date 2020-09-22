@@ -3,69 +3,14 @@ name: 'GitHubActions'
 on: [push]
 
 jobs:
-  yarn_build: 
-    name: 'YarnBuild'
+  test-failure: 
+    name: 'Test Failure'
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    defaults:
-      run:
-        working-directory: ./website
-        
-#     container: node:10.18-jessie
-
-    # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres:12.4
-        # Provide the password for postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres  
-          POSTGRES_DB: telehealth_testing  
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5  
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432         
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - name: Exit 1
+      continue-on-error: true
+      run: exit 1
 
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12'
-    - run: yarn -v
-    - name: NPM runs
-      run: yarn --frozen-lockfile
-    - run: yarn build
-    - run: yarn db:migrate
-      env: 
-        TYPEORM_CONNECTION: "postgres"
-        TYPEORM_HOST: "localhost"
-        TYPEORM_USERNAME: "postgres"
-        TYPEORM_PASSWORD: "postgres"
-        TYPEORM_DATABASE: "telehealth_testing"
-        TYPEORM_PORT: 5432
-        TYPEORM_ENTITIES: "entities/*{.ts, .js}"
-        TYPEORM_MIGRATIONS: "migrations/*.ts"
-        TYPEORM_ENTITIES_DIR: "entities"
-        TYPEORM_MIGRATIONS_DIR: "migrations"
-        TYPEORM_SYNCHRONIZE: true
-        PGHOST: "postgres"
-        PGDATABASE: "telehealth_testing"
-        PGUSER: "postgres"
-        PGPASSWORD: "postgres"
-        PGPORT: "5432"
-    - run: yarn test   
-
+    - name: Next Step
+      run: echo "next step"
