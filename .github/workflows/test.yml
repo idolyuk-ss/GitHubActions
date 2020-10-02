@@ -14,3 +14,6 @@ jobs:
 
     - name: Next Step
       run: echo "next step"
+    
+    - name: GITHUB_RUN_NUMBER
+      run: echo $GITHUB_RUN_NUMBER
